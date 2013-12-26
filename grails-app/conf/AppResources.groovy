@@ -76,6 +76,7 @@ modules = {
 		resource url:'/js/species/posting.js'
         resource url:'/js/feature.js'
         resource url:'/js/flag.js'
+        resource url:'/js/jstree-v.pre1.0/jquery.jstree.js'
 	}
 
 	auth {
@@ -144,7 +145,7 @@ modules = {
 		
         resource url:'/js/species/observations/list.js'
 	}
-
+ 
 	susers_list { 
 		dependsOn 'core, list_utils'
 	

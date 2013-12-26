@@ -31,7 +31,7 @@ if(r) {
 
 <g:render template="/common/titleTemplate" model="['title':title, 'description':description, 'canonicalUrl':canonicalUrl, 'imagePath':imagePath, 'videoPath':videoPath]"/>
 
-<r:require modules="observations_show"/>
+<r:require modules="observations_show , species_navigator"/>
 
 <style>
 .nameContainer {
@@ -105,6 +105,7 @@ if(r) {
                                </div>
                                
                                <div class="span12" style="margin-left:0px">
+                                   
                                    <g:render template="/common/observation/showObservationStoryActionsTemplate"
                                    model="['instance':observationInstance, 'href':canonicalUrl, 'title':title, 'description':description, 'showDetails':true,'hideDownload':true]" />
                                </div>
@@ -199,7 +200,8 @@ if(r) {
                                                                                        
 					<uGroup:objectPostToGroupsWrapper 
 					    model="['observationInstance':observationInstance, 'objectType':observationInstance.class.canonicalName]"/>
-					<div class="union-comment">
+                                        <g:render template="/common/treeTemplate" />    
+                                        <div class="union-comment">
 					<feed:showAllActivityFeeds model="['rootHolder':observationInstance, feedType:'Specific', refreshType:'manual', 'feedPermission':'editable']" />
 					<comment:showAllComments model="['commentHolder':observationInstance, commentType:'super','showCommentList':false]" />
 					</div>

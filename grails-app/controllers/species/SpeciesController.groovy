@@ -32,8 +32,9 @@ class SpeciesController extends AbstractObjectController {
     def speciesUploadService;
 	def speciesService;
 	def observationService;
-	def userGroupService
-	
+	def userGroupService;
+	def treeNavigatorService;
+
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
 	def index = {
@@ -63,7 +64,11 @@ class SpeciesController extends AbstractObjectController {
 		}
 	}
 
-	def listXML = {
+    def nav= {
+        log.debug params;
+    }
+
+    def listXML = {
 		//cache "taxonomy_results"
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		def speciesList = Species.list(params) as XML;
@@ -499,4 +504,97 @@ class SpeciesController extends AbstractObjectController {
 		r['msg']= "${message(code: 'species.download.requsted', default: 'Processing... You will be notified by email when it is completed. Login and check your user profile for download link.')}"
 		render r as JSON
 	}
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+	////////////////////////////// NAVIGATOR //////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+    
+
+    def countOfAllInnerNodes = {
+        def result = navigatorService.countOfAllInnerNodes(nodeId)    
+    }
+
+    def countOfAllInnerLeafNodes = {
+        def result = navigatorService.countOfAllInnerLeafNodes(nodeId) 
+    }
+
+    def getInnerNodesId = {
+        long nodeId = params.nodeId.toLong();
+        println "===========NODE ID =========== " + nodeId
+        if(nodeId==null){
+            println "===LIGHT=="
+        }
+        def result = treeNavigatorService.getInnerNodesId(nodeId)
+        render result as JSON;
+    }
+
+    def getInnerLeafNodesId = {
+        def result = navigatorService.getInnerLeafNodesId(nodeId)
+    }
+
+    def getCurator = {
+        def result = navigatorService.getCurator(nodeId)
+    }
+
+    def getContibutor = {
+        def result = navigatorService.getContributor(nodeId)
+    }
+    
+    ////////////////// CONVENTIONAL DB ////////////////////////////////////////////////////////////////////////
+
+    def requestCuratorship = {
+        return speciesUtilService.requestCuratorship(params.selectedNodes)
+    } 
+    
+    def requestContributorship = {
+        return speciesUtilService.requestContributorship(params.selectedNodes)
+    }
+
+
+    @Secured(['ROLE_USER'])
+    def confirmPermissionRequest = {                   //check params having all required or not?
+		log.debug params;
+        def obj = params.obj;
+		if(params.userId) {
+			def user;
+			if(params.userId == 'register') {
+				user = springSecurityService.currentUser
+			} else {
+				user = SUser.read(params.userId.toLong())
+			}
+            if(user && speciesUtilService.isCurator(user, obj)) {
+				switch(params.role) {
+					case UserPermissionRoleType.CURATOR.value():
+                        if(speciesUtilService.addCurator(user, obj)) {
+                            flash.message="Successfully added ${user} as a curator"
+						}
+						break;
+					case UserPermissionRoleType.CONTRIBUTOR.value():
+                        if(speciesUtilService.addContributor(user, obj)) {
+							flash.message="Successfully added ${user} as a contributor"
+						}
+						break;
+					default: log.error "No proper role type is specified."
+				}
+				def conf = PendingEmailConfirmation.findByConfirmationToken(params.confirmationToken);
+				if(conf) {
+					log.debug "Deleting confirmation code and usertoken params";
+					conf.delete();
+					UserToken.get(params.tokenId.toLong())?.delete();
+				}   
+			} else {
+				if(user && !speciesUtilService.isCurator(user, obj)) {
+					flash.error="Couldn't add user as the curator as the currently logged in user doesn't have required permissions."
+				} else {
+					flash.error="Couldn't add user to the group because of missing information."
+				}
+			}
+			redirect url: uGroup.createLink(mapping: 'userGroup', action:"show", 'userGroup':userGroupInstance);    //TODO:redirection where??????
+			return;
+		}
+		flash.error="There seems to be some problem. You are not the user to whom this confirmation request is sent as per our records."
+		redirect url: uGroup.createLink(mapping: 'userGroupGeneric', action:"list");   //TODO: REDIRECTION
+	}
+
 }

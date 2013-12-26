@@ -51,8 +51,8 @@ grails.project.dependency.resolution = {
 	compile ('org.quartz-scheduler:quartz:1.8.4') {
             excludes 'slf4j-api', 'jcl-over-slf4j'
         }
-        compile 'org.apache.lucene:lucene-analyzers:3.4.0'
-        compile 'org.apache.lucene:lucene-spellchecker:3.4.0'
+        //TODO CHK IF NOT REQUIRED:compile 'org.apache.lucene:lucene-analyzers:4.4.0'
+        //TODO CHK IF NOT REQUIRED:ccompile 'org.apache.lucene:lucene-spellchecker:4.4.0'
         compile group:'org.apache.poi', name:'poi', version:'3.7'
         compile group:'org.apache.poi', name:'poi-contrib', version:'3.6'
         compile group:'org.apache.poi', name:'poi-scratchpad', version:'3.7'
@@ -89,15 +89,28 @@ grails.project.dependency.resolution = {
         compile 'org.imgscalr:imgscalr-lib:4.2'
         compile 'org.apache.sanselan:sanselan:0.97-incubator'
         compile 'jmimemagic:jmimemagic:0.1.2'
-        
+        compile 'org.webjars:jstree:1.0.0-1' 
         //compile 'net.sf.jtidy:jtidy:r938'
+/* runtime("org.grails:grails-datastore-gorm:1.0.2.RELEASE","org.grails:grails-datastore-core:1.0.2.RELEASE") {
+    excludes "jcl-over-slf4j", "slf4j-api",'slf4j-log4j12','jul-to-slf4j'
 
+ }
+
+
+        compile("org.neo4j:neo4j:1.9.5"){
+            excludes "neo4j-lucene-index", 'slf4j', 'slf4j-log4j12', 'slf4j-api', 'jcl-over-slf4j','jul-to-slf4j'
+
+        }
+        compile ("com.keatext:neo4j-lucene4-index:1.9.M01-SNAPSHOT") {
+        }
+*/
     }
     plugins { 
         compile ":spring-security-core:1.2.7.3" 
         runtime ":resources:1.1.6" 
         runtime ":webxml:1.4.1" 
         compile ':plugin-config:0.1.5'
+        //compile ":neo4j:1.9.5"
     } 
 
     grails.war.resources = { stagingDir ->

@@ -15,7 +15,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
 
 import grails.converters.JSON;
 import grails.converters.XML;
-
+import org.codehaus.groovy.grails.web.json.JSONObject;
 import species.participation.Flag.FlagType
 import species.participation.Follow
 import grails.plugins.springsecurity.Secured
@@ -67,7 +67,6 @@ class ActionController {
         }
         else if(type == "content.eml.Document") {
             documentSearchService.publishSearchIndex(obv, true);
-
         }
     } 
 
@@ -379,4 +378,81 @@ class ActionController {
             render message as JSON
 		} 
 	}
+
+    def sendData = {
+        def data = new File('/home/rahulk/Downloads/jstreetesting/foo.html').text
+        render text: data, contentType:"text/html", encoding:"UTF-8" 
+        return
+        //def data = "<li id='root'><a href='#'>hello</a><ul><li><a href='#'>Child hello node</a></li></ul></li>"
+
+        //def x = new JSONObject().put("data" , "A NODE")
+        /*def data = [
+
+        { 
+        "data" : "A node",
+
+        "metadata" : { id : 23 },
+
+        "children" : [ "Child 1", "A Child 2" ]
+        },
+
+        {
+
+        "attr" : { "id" : "li.node.id1" },
+
+        "data" : {
+
+        "title" : "Long format demo",
+
+        "attr" : { "href" : "#" }
+        }
+
+        }
+        ]*/
+        //render data
+    }
+
+    @Secured(['ROLE_USER'])
+    def requestCurator = {
+        log.debug params;
+        def user = springSecurityService.currentUser;
+        def selectedNodes = params.selectedNodes
+        if(user) {
+            selectedNodes.each {
+                List ancestors = getAllAncestors (it)
+                def res = []
+                def records = []
+                ancestors.each { ances ->
+                    records = SOmeTable.findAllWhere(node: ances)
+                    records.each { rec ->
+                        res.add(rec.user)
+                    }
+                }
+                res.each { r ->
+                    //these people should receive confirmation mail
+                    
+                }
+            }
+            //==============================NEEDS TO BE REMOVED=========================================
+            if(userGroupInstance.isMember(user)) {
+                render (['success':true, 'statusComplete':false, 'shortMsg':'Already a member', 'msg':'Already a member.'] as JSON);
+                return;
+            }
+
+            String usernameFieldName = SpringSecurityUtils.securityConfig.userLookup.usernamePropertyName
+            def founders = userGroupInstance.getFounders(userGroupInstance.getFoundersCount(), 0);
+            founders.addAll(userGroupInstance.getExperts(userGroupInstance.getExpertsCount(), 0));
+            founders.each { founder ->
+                log.debug "Sending email to  founder ${founder}"
+                def userToken = new UserToken(username: user."$usernameFieldName", controller:'userGroupGeneric', action:'confirmMembershipRequest', params:['userGroupInstanceId':userGroupInstance.id.toString(), 'userId':user.id.toString(), 'role':UserGroupMemberRoleType.ROLE_USERGROUP_MEMBER.value()]);
+                userToken.save(flush: true)
+                emailConfirmationService.sendConfirmation(founder.email,
+                "Please confirm membership",  [founder:founder, user: user, userGroupInstance:userGroupInstance,domain:Utils.getDomainName(request), view:'/emailtemplates/requestMembership'], userToken.token);
+            }
+            render (['success':true, 'statusComplete':true, 'shortMsg':'Sent request', 'msg':'Sent request to admins for confirmation.'] as JSON);
+            return;
+        }
+        render (['success':true,'statusComplete':false, 'shortMsg':'Please login', 'msg':'Please login to confirm request.'] as JSON);
+ 
+    }
 }

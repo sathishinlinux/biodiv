@@ -204,8 +204,16 @@ class SUser {
 		}
 	}
 
-	def fetchCommentCount(){
-		return commentService.getCountByUser(this)
-	}
+    def fetchCommentCount(){
+        return commentService.getCountByUser(this)
+    }
+/*
+    boolean isCurator() {
 
+    }
+
+    boolean isContributor() {
+
+    }
+*/
 }

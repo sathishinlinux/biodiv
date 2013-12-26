@@ -1,0 +1,9 @@
+1. APIs in SpeciesUtilService.groovy related with conventional db
+2. NavigatorService.groovy - deals with neo4j graph db
+3. UserPermission.groovy domain class
+4. Lock.groovy 
+5. some calls via SpeciesController.groovy and confirmPermissionRequest API.
+6. somethings done in SpeciesField.groovy related to lock and content version.
+7. stuck at doing getAllParents and getAllChildren.
+8. made few gsp templates named requestPermission.gsp, curatorInvitation.gsp, treeTemplate.gsp
+9. ContentVersions.groovy domain class

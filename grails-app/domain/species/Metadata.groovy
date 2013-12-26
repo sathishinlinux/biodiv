@@ -125,5 +125,5 @@ abstract class Metadata {
 	SpeciesGroup fetchSpeciesGroup() {
 		return this.group?:SpeciesGroup.findByName(grailsApplication.config.speciesPortal.group.OTHERS); 
 	}
-
-}
+   
+}   

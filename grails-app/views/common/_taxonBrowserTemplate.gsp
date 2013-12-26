@@ -105,7 +105,7 @@ var heirarchyLevelFormatter = function(el, cellVal, opts) {
 <div class="taxonomyBrowser sidebar_section" style="position: relative;">
         <h5>Classifications</h5>	
 		<g:if test="${speciesInstance}">
-			<g:set var="classifications" value="${speciesInstance.classifications()}" />
+                <g:set var="classifications" value="${speciesInstance.classifications()}" />
 		</g:if><g:else>
 			<g:set var="classifications" value="${Classification.list()}" />
 		</g:else>

@@ -51,5 +51,5 @@ class AbstractObjectController {
 		}
 		render relatedObv as JSON
 	}
-
+    
 }
