@@ -576,6 +576,8 @@ class ObservationController extends AbstractObjectController {
 	 */
 	@Secured(['ROLE_USER'])
 	def addRecommendationVote = {
+
+
 		if(chainModel?.chainedParams) {
 			//need to change... dont pass on params
 			chainModel.chainedParams.each {
@@ -596,6 +598,8 @@ class ObservationController extends AbstractObjectController {
 				msg = recVoteResult?.msg;
 			}
 			
+
+
 			def observationInstance = Observation.get(params.obvId);
 			log.debug params;
 			def mailType
@@ -776,13 +780,17 @@ class ObservationController extends AbstractObjectController {
 			try {
 				def results = observationInstance.getRecommendationVotes(params.max, params.offset);
 				log.debug results;
-				def html =  g.render(template:"/common/observation/showObservationRecosTemplate", model:['observationInstance':observationInstance, 'result':results.recoVotes, 'totalVotes':results.totalVotes, 'uniqueVotes':results.uniqueVotes, 'userGroupWebaddress':params.userGroupWebaddress]);
+				
+				def customHTML = getRecommendationListJSON(observationInstance, results.recoVotes, results.totalVotes, results.uniqueVotes, params.userGroupWebaddress); 
+				def html =  g.render(template:"/common/observation/showObservationRecosTemplate", model:['observationInstance':observationInstance, 'result':results.recoVotes, 'totalVotes':results.totalVotes, 'uniqueVotes':results.uniqueVotes, 'userGroupWebaddress':params.userGroupWebaddress]);  
+				/*def html =  customHTML;*/
 				def speciesNameHtml =  g.render(template:"/common/observation/showSpeciesNameTemplate", model:['observationInstance':observationInstance]);
 				def speciesExternalLinkHtml =  g.render(template:"/species/showSpeciesExternalLinkTemplate", model:['speciesInstance':Species.read(observationInstance.maxVotedReco?.taxonConcept?.findSpeciesId())]);
 				def result = [
 					'status' : 'success',
 					canMakeSpeciesCall:params.canMakeSpeciesCall,
 					recoHtml:html?:'',
+					customHTML:customHTML?:'', 
 					uniqueVotes:results.uniqueVotes?:'',
 					msg:params.msg?:'',
 					speciesNameTemplate:speciesNameHtml?:'',
@@ -1347,4 +1355,19 @@ class ObservationController extends AbstractObjectController {
         def result = ['msg': msg]
         render result as JSON
     }
+
+
+
+    def getRecommendationListJSON(observationInstance, result, totalVotes, uniqueVotes, userGroupWebaddress)
+    {
+
+    		def test = ['observation': observationInstance, 'totalVotes' : totalVotes, 'uniqueVotes' : uniqueVotes , 'result' : result];
+    		return test; /* as JSON; */
+
+
+
+    }
+
+
+
 }

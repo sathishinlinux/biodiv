@@ -16,14 +16,14 @@ alias gcl='git clone'
 
 ra() {
     echo "$@"
-    cd ~/git/$1 
-    grails run-app ~/git/$1 &> ~/git/$1/logs/$1.log &
-    tail -f ~/git/$1/logs/$1.log
+    cd ~/grails_workspace/$1 
+    grails run-app ~/grails_workspace/$1 &> ~/grails_workspace/$1/logs/$1.log &
+    tail -f ~/grails_workspace/$1/logs/$1.log
 }
 rs () {  
-    cd ~/git/$1 
-    grails run-script ~/git/$1/userscripts/$2.groovy &> ~/git/$1/logs/$1script.log &
-    tail -f ~/git/$1/logs/$1script.log
+    cd ~/grails_workspace/$1 
+    grails run-script ~/grails_workspace/$1/userscripts/$2.groovy &> ~/grails_workspace/$1/logs/$1script.log &
+    tail -f ~/grails_workspace/$1/logs/$1script.log
 }
 dadb () {  
     dropdb -Upostgres $1;
@@ -36,5 +36,3 @@ cadb () {
 }
 
 export GRAILS_OPTS="-XX:MaxPermSize=256m -Xmx1024M"
-
-

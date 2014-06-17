@@ -190,6 +190,8 @@ if(r) {
 									
 									 <input type="submit"
 											value="Add" class="btn btn-primary btn-small pull-right" style="position: relative;top: -30px; border-radius:4px" />
+
+                                     <!-- <div class="btn btn-primary btn-small append_class"> Append</div> -->      
 								</div>
 								
 							</form>
@@ -257,6 +259,156 @@ if(r) {
 	$(document).ready(function(){
 <%--		initRelativeTime("${uGroup.createLink(controller:'activityFeed', action:'getServerTime')}");--%>
 <%--		dcorateCommentBody($('.yj-message-body')); --%>
+
+
+        // Append Demo 
+
+
+        function getRecommendationList(recommendationList){
+
+                // var jsonresponseObserve = $.parseJSON(recommendationList);
+                var jsonresponseObserve = recommendationList;
+                //console.log(recommendationList);
+                var jsonresponse = recommendationList.result;
+                var htmlOutput = '';
+
+
+                $.each(jsonresponse, function(i, recommend) {
+                    
+                    htmlOutput += "<li class='reco_block'>";
+
+                    htmlOutput += "<div>";
+
+                    htmlOutput += "<div class='users'>";
+
+                    htmlOutput += "<div class='iAgree'>";
+
+                    if(!recommend.disAgree){
+                        var observation_addAgree = "/observation/addAgreeRecommendationVote";
+                        htmlOutput += "<button class=\"btn btn-primary btn-small nameAgree\" style=\"margin-left: 1px;\" onclick=\"addAgreeRecoVote(" +recommend.obvId + ","+ recommend.recoId+","+recommend.noOfVotes+", $(this).closest(\"li\"), '"+ observation_addAgree +"', this); return true;\">Agree</button>";
+                    }else{
+                         var  observation_removeAgree  = "/observation/removeRecommendationVote";
+                         htmlOutput += "<button class=\"btn btn-primary btn-small nameRemove \" style=\"margin-left: 1px;\" onclick=\"removeRecoVote('" + recommend.obvId +"',"+ recommend.recoId+", '"+observation_removeAgree+"', this); return true;\">Remove</button>";
+                    }    
+
+                    htmlOutput += "</div>"; 
+
+                    $.each(recommend.authors, function(j,author){
+
+                    htmlOutput += '<a href="/user/show/'+author.id+'" title="'+author.name+'">';
+                    htmlOutput += '<img class="small_profile_pic" src="'+author.icon+'" title="'+author.name+'" />';
+                    htmlOutput += '</a>';                     
+                                          
+                    });
+                    htmlOutput += "</div>";
+
+
+                    var lockButton;
+                    if(recommend.showLock){
+                    lockButton = "Lock";
+                    }
+                    else{
+                    lockButton = "Unlock";
+                    }
+
+                    var observation_lock_url = "/observation/lock/"+jsonresponseObserve.observation.id;                   
+                     
+                    htmlOutput += "<a class=\"lockObvId pull-right btn btn-primary btn-small\" style=\"margin-left: 1px; background: orangered;\" onclick=\"lockObv('" +observation_lock_url+ "', '" +lockButton+"',"+recommend.recoId +","+ recommend.obvId+ ")\">";
+
+                    htmlOutput += '<i class="icon-lock"></i>'+lockButton+'</a>';
+
+                    htmlOutput += '<span class"voteCount">';
+                    htmlOutput += '<span id="votes_8">'+recommend.noOfVotes;
+                    htmlOutput += '</span>';
+                    htmlOutput += '  users think it is:'; 
+                    htmlOutput += '</span>';
+
+                    htmlOutput += '<span class="highlight">';
+                    htmlOutput += '<i>'+recommend.name+'</i>'+recommend.commonNames;                    
+                    htmlOutput += '</span>';
+
+                    htmlOutput += getcommentList();
+
+
+                    htmlOutput += "</div>";
+                    htmlOutput += "</li>";
+
+                   
+
+                 });   
+
+                $('#recoSummary').html(htmlOutput);
+
+
+        }
+
+
+        function getcommentList(){
+
+            var htmlOutput  = "";
+    htmlOutput +="<div class=\"comment-popup\" style=\"position:relative;\">";
+    htmlOutput +="<a class=\"btn btn-mini\" data-toggle=\"dropdown\" href=\"#\" onclick=\"$(this).next().show(); dcorateCommentBody($(this).next().find('.comment .yj-message-body')) ;return false;\">";
+    htmlOutput +="<i class=\"icon-comment\"></i>";
+    htmlOutput +="1</a>";
+
+    htmlOutput +="<div class=\"reco-comment-table\" style=\"display: none;\">";
+    htmlOutput +="<div class=\"comment\">";
+    htmlOutput +="<div class=\"post-comment\">";
+    htmlOutput +="<form class=\"form-horizontal\" onsubmit=\"return postComment(this, &quot;/comment/addComment&quot;)\">";
+    htmlOutput +="<textarea name=\"commentBody\" class=\"comment-textbox\" placeholder=\"Write comment on species call\"></textarea>";
+    htmlOutput +="<span style=\"color:#B84A48; display:none;\">Please write comment</span>";
+    htmlOutput +="<input type=\"hidden\" name=\"commentHolderId\" value=\"17\">";
+    htmlOutput +="<input type=\"hidden\" name=\"commentHolderType\" value=\"species.participation.Recommendation\">";
+    htmlOutput +="<input type=\"hidden\" name=\"rootHolderId\" value=\"1\">";
+    htmlOutput +="<input type=\"hidden\" name=\"rootHolderType\" value=\"species.participation.Observation\">";
+    htmlOutput +="<input type=\"hidden\" name=\"commentType\" value=\"context\">";
+    htmlOutput +="<input type=\"hidden\" name=\"newerTimeRef\" value=\"1402908762273\">";
+    htmlOutput +="<input type=\"hidden\" name=\"commentPostUrl\" value=\"/comment/addComment\">";
+    htmlOutput +="<input type=\"submit\" value=\"Post\" class=\"btn comment-post-btn\" style=\"float:right;\">";
+    htmlOutput +="</form>";
+    htmlOutput +="</div>"; /* post-comment */
+
+
+    htmlOutput +="<ul>";
+    htmlOutput +="<li class=\"5\">";
+    htmlOutput +="<div class=\"yj-thread-replies-container\">";
+    htmlOutput +="<div class=\"yj-message-container\">";
+    htmlOutput +="<div class=\"yj-avatar\">";
+    htmlOutput +="<a href=\"/biodiv/user/show/5\">";
+    htmlOutput +="<img class=\"small_profile_pic\" src=\"http://localhost/biodiv/users//88aaef30-a058-413d-9ee4-4aae5ea99a42/resources/870_gall_th.jpg\" title=\"sathish\">";
+    htmlOutput +="</a>";
+    htmlOutput +="</div>";
+    htmlOutput +="<b> sathish : </b>";
+    htmlOutput +="<div class=\"yj-context ellipsis\">Comment on species call:";
+    htmlOutput +="<i>sathish</i>";
+    htmlOutput +="</div>";
+    htmlOutput +="<div class=\"yj-message-body\">";
+    htmlOutput +="test sathish";
+    htmlOutput +="</div>";
+    htmlOutput +="<div class=\"yj-attributes\">";
+    htmlOutput +="<time class=\"timeago\" datetime=\"1402908762273\">13 minutes ago</time>";
+    htmlOutput +="sathish.m";
+    htmlOutput +="<a href=\"#\" onclick=\"deleteComment(5, \"/biodiv/comment/removeComment\"); return false;\">";
+    htmlOutput +="<span class=\"deleteFlagIcon\"><i class=\"icon-trash\"></i></span>";
+    htmlOutput +="</a>";
+    htmlOutput +="</div>";
+    htmlOutput +="</div>";
+    htmlOutput +="</div>";
+    htmlOutput +="</li></ul>";
+    htmlOutput +="<input type=\"hidden\" name=\"olderTimeRef\" value=\"1402908762273\">";
+    htmlOutput +="</div>"; /* comment */
+
+    htmlOutput +="<div class=\"reco-comment-close\" value=\"close\" onclick=\"$(this).parent().hide(); return false;\">";
+    htmlOutput +="<i class=\"icon-remove\"></i>";
+    htmlOutput +="</div>";
+
+    htmlOutput +="</div>"; /* reco-comment-table */
+    htmlOutput +="</div>"; /* comment-popup */
+
+    return htmlOutput
+
+
+        }
 
 		$("#seeMoreMessage").hide();
                 		$(".readmore").readmore({
@@ -341,6 +493,7 @@ if(r) {
          
                
      	$('#addRecommendation').bind('submit', function(event) {
+            
      		$(this).ajaxSubmit({ 
 	         	url:"${uGroup.createLink(controller:'observation', action:'addRecommendationVote')}",
 				dataType: 'json', 
@@ -350,18 +503,24 @@ if(r) {
 					return true;
 				}, 
 	            success: function(data, statusText, xhr, form) {
+
+                    console.log(data.customHTML);
+                    alert("haiu jj");
+
 	            	if(data.status == 'success') {
 		             	if(data.canMakeSpeciesCall === 'false'){
 		             		$('#selectedGroupList').modal('show');
 		             	} else{
-		             		showRecos(data, null);
+		             		//showRecos(data, null);
+                            getRecommendationList(data.customHTML);
 		            		updateUnionComment(null, "${uGroup.createLink(controller:'comment', action:'getAllNewerComments')}");
-		            		updateFeeds();
+		            	    updateFeeds();
 		            		setFollowButton();
 		            		showUpdateStatus(data.msg, data.status);
 		            	}
 	            	} else {
-         				showUpdateStatus(data.msg, data.status);
+         				//showUpdateStatus(data.msg, data.status);
+                        //getRecommendationList(data.customHTML);
          			}
          			$("#addRecommendation")[0].reset();
          			$("#canName").val("");
@@ -376,7 +535,23 @@ if(r) {
 	     	event.preventDefault();
      	});
         
-                $(".nav a.disabled").click(function() {
+
+
+       
+
+        $('.append_class').click(function(){  
+
+                var RecommendListObserve = '{"observation":{"class":"species.participation.Observation","id":2,"agreeTerms":true,"annotations":[],"author":{"class":"SUser","id":5},"checklistAnnotations":null,"createdOn":"2014-06-10T09:37:52Z","featureCount":0,"flagCount":0,"fromDate":"2014-06-09T18:30:00Z","geoPrivacy":false,"group":{"class":"SpeciesGroup","id":1},"habitat":{"class":"Habitat","id":1},"isChecklist":false,"isDeleted":false,"isLocked":false,"isShowable":true,"lastRevised":"2014-06-13T07:29:54Z","latitude":13.146444,"locationAccuracy":"Accurate","longitude":80.08404,"maxVotedReco":{"class":"Recommendation","id":8},"notes":"","placeName":"Avadi, Tamil Nadu, India","rating":0,"recommendationVote":[{"class":"RecommendationVote","id":16},{"class":"RecommendationVote","id":17},{"class":"RecommendationVote","id":8}],"resource":[{"class":"Resource","id":2}],"reverseGeocodedName":"Avadi, Tamil Nadu, India","searchText":null,"sourceId":2,"toDate":"2014-06-09T18:30:00Z","topology":"POINT (80.08403699999997 13.146444)","userGroups":[],"visitCount":161},"totalVotes":3,"uniqueVotes":2,"result":[{"recoId":8,"isScientificName":true,"name":"Test3","authors":[{"id":2,"name":"Welcome Karur","email":"welcome.karur@gmail.com","icon":"http://graph.facebook.com/100006454495045/picture?type=large"},{"id":5,"name":"sathish","email":"sathish.m@ifpindia.org","icon":"http://localhost/biodiv/users//88aaef30-a058-413d-9ee4-4aae5ea99a42/resources/870_th1.jpg"}],"votedOn":["2014-06-10T09:59:34Z","2014-06-13T07:24:50Z"],"noOfVotes":2,"totalVotes":3,"recoComments":[],"obvId":2,"isLocked":false,"commonNames":"(English: Test3)","disAgree":true,"showLock":true},{"recoId":13,"isScientificName":false,"name":"Test6","authors":[{"id":3,"name":"Sathish Kannan","email":"sathitha53384@gmail.com","icon":"http://graph.facebook.com/100001548409455/picture?type=large"}],"votedOn":["2014-06-13T07:29:54Z"],"noOfVotes":1,"totalVotes":3,"recoComments":[],"obvId":2,"isLocked":false,"commonNames":"(English: Test6)","disAgree":false,"showLock":true}]} ';
+
+                /* var RecommendList = '[{"recoId":8,"isScientificName":true,"name":"Test3","authors":[{"id":2,"name":"Welcome Karur","email":"welcome.karur@gmail.com","icon":"http://graph.facebook.com/100006454495045/picture?type=large"},{"id":5,"name":"sathish","email":"sathish.m@ifpindia.org","icon":"http://localhost/biodiv/users//88aaef30-a058-413d-9ee4-4aae5ea99a42/resources/870_th1.jpg"}],"votedOn":["2014-06-10T09:59:34Z","2014-06-13T07:24:50Z"],"noOfVotes":2,"totalVotes":3,"recoComments":[],"obvId":2,"isLocked":false,"commonNames":"(English: Test3)","disAgree":true,"showLock":true},{"recoId":13,"isScientificName":false,"name":"Test6","authors":[{"id":3,"name":"Sathish Kannan","email":"sathitha53384@gmail.com","icon":"http://graph.facebook.com/100001548409455/picture?type=large"}],"votedOn":["2014-06-13T07:29:54Z"],"noOfVotes":1,"totalVotes":3,"recoComments":[],"obvId":2,"isLocked":false,"commonNames":"(English: Test6)","disAgree":false,"showLock":true}]';*/
+
+
+
+                getRecommendationList(RecommendListObserve);
+
+        });
+
+        $(".nav a.disabled").click(function() {
 			return false;
 		})
 

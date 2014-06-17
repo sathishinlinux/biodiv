@@ -3,7 +3,10 @@
 <%@page import="species.participation.Recommendation"%>
 
 <g:if test="${result.size() > 0 }">
+<%-- ${customHTML}  --%>
+
 <g:each in="${result}" var="r">
+${customHTML} 
 <li class="reco_block ${r.maxVotedSpeciesName?'max_voted_species_name':''}">
 <div class="">
     <div class="users">
