@@ -172,7 +172,7 @@ fbAppId =  grailsApplication.config.speciesPortal.ibp.facebook.appId;
                                                         window.location = "${uGroup.createLink(controller:'login', action:'authSuccess')}"+"?uid="+response.authResponse.userID+redirectTarget
                                                 }
                                         } else {
-                                                alert("Failed to connect to Facebook");
+                                                alert(window.i8ln.species.specie.failed);
                                         }
                                 }, scope);
                         });

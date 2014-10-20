@@ -144,7 +144,9 @@ $(document).ready(function() {
                 "reload":"${g.message(code:'link.press.reload')}",
                 "unf":"${g.message(code:'followtemp.unfollow')}",
                 "flo":"${g.message(code:'followtemp.follow')}",                 
-                "ops":"${g.message(code:'observations.species.group')}"
+                "ops":"${g.message(code:'observations.species.group')}",
+                "failed":"${g.message(code:'failed.to.connect')}"
+
                 
                 
             } ,
