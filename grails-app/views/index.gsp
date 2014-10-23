@@ -9,6 +9,11 @@
         <meta name="layout" content="main" />
         <title>${grailsApplication.config.speciesPortal.app.siteName}</title>
         <r:require modules="core" />
+        <style type="text/css">
+             body {
+            overflow-x:hidden;
+                  }
+        </style>
         <style>
             #home .entry {
                 border-radius: 7px 7px 0px 0px;

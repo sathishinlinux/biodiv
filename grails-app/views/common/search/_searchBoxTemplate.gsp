@@ -107,8 +107,8 @@ $(document).ready(function() {
                 "del": "${g.message(code:'delete.content')}", 
                 "re":"${g.message(code:'resubmit.form')}",
                 "sub":"${g.message(code:'resubmit.login')}",
-                "un":"${g.message(code:'service.later')}",
-                "er":"${g.message(code:'fix.errors')}"
+                "un":"${g.message(code:'service.later')}"
+                
                 
             },
             "ajaxLogin" : {
@@ -149,7 +149,8 @@ $(document).ready(function() {
                 "unf":"${g.message(code:'followtemp.unfollow')}",
                 "flo":"${g.message(code:'followtemp.follow')}",                 
                 "ops":"${g.message(code:'observations.species.group')}",
-                "failed":"${g.message(code:'failed.to.connect')}"
+                "failed":"${g.message(code:'failed.to.connect')}",
+                "er":"${g.message(code:'fix.errors')}"
 
                 
                 
